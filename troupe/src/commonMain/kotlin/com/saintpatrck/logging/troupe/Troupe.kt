@@ -1,5 +1,3 @@
-@file:JvmName("Troupe")
-
 package com.saintpatrck.logging.troupe
 
 import kotlin.concurrent.Volatile
