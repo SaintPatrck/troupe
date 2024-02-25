@@ -1,4 +1,4 @@
-package com.saintpatrck.log.troupe
+package com.saintpatrck.logging.troupe
 
 import android.os.Build
 import android.util.Log
@@ -6,12 +6,14 @@ import java.util.regex.Pattern
 import kotlin.math.min
 
 @Suppress("unused")
-actual open class DebugBard : Troupe.Bard() {
+open class AndroidDebugBard : Troupe.Bard() {
+
+    // Fully qualified class names of classes to be ignored.
     private val fqcnIgnore = listOf(
         Troupe::class.java.name,
         Troupe.Bard::class.java.name,
         Troupe.Companion::class.java.name,
-        DebugBard::class.java.name
+        AndroidDebugBard::class.java.name
     )
 
     override val tag: String?
