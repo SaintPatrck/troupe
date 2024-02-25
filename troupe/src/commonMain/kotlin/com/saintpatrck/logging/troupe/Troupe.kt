@@ -1,4 +1,4 @@
-package com.saintpatrck.log.troupe
+@file:JvmName("Troupe")
 
 package com.saintpatrck.logging.troupe
 
@@ -6,7 +6,6 @@ import kotlin.concurrent.Volatile
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
-import kotlin.jvm.Volatile
 import kotlin.native.concurrent.ThreadLocal
 
 class Troupe private constructor() {
@@ -408,4 +407,12 @@ class Troupe private constructor() {
         @Volatile
         private var bardArray = emptyArray<Bard>()
     }
+}
+
+fun sing(priority: Int, message: String?) {
+    Troupe.sing(priority, message)
+}
+
+fun sing(tag: String, priority: Int, message: String?) {
+    Troupe.tag(tag).sing(priority, message)
 }

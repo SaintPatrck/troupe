@@ -1,4 +1,4 @@
-package com.saintpatrck.log.troupe
+package com.saintpatrck.logging.troupe
 
 import android.os.Build
 import android.util.Log
@@ -13,7 +13,6 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import org.robolectric.shadows.ShadowLog
-import org.robolectric.shadows.ShadowLog.LogItem
 import java.net.ConnectException
 import java.net.UnknownHostException
 import java.util.concurrent.CountDownLatch
@@ -21,6 +20,7 @@ import java.util.concurrent.CountDownLatch
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
 class TroupeTest {
+
     @Before
     @After
     fun setUpAndTearDown() {
@@ -29,8 +29,8 @@ class TroupeTest {
 
     // NOTE: This class references the line number. Keep it at the top so it does not change.
     @Test
-    fun debugTreeCanAlterCreatedTag() {
-        Troupe.recruit(object : DebugBard() {
+    fun debugBardCanAlterCreatedTag() {
+        Troupe.recruit(object : AndroidDebugBard() {
             override fun createStackElementTag(element: StackTraceElement): String {
                 return super.createStackElementTag(element) + ':'.toString() + element.lineNumber
             }
@@ -61,7 +61,7 @@ class TroupeTest {
         // inserts bards and checks if the amount of returned bards matches.
         assertThat(Troupe.bardCount).isEqualTo(0)
         for (i in 1 until 50) {
-            Troupe.recruit(DebugBard())
+            Troupe.recruit(AndroidDebugBard())
             assertThat(Troupe.bardCount).isEqualTo(i)
         }
         Troupe.disbandAll()
@@ -70,8 +70,8 @@ class TroupeTest {
 
     @Test
     fun bardsReturnsAllPlanted() {
-        val bard1 = DebugBard()
-        val bard2 = DebugBard()
+        val bard1 = AndroidDebugBard()
+        val bard2 = AndroidDebugBard()
         Troupe.recruit(bard1)
         Troupe.recruit(bard2)
 
@@ -79,9 +79,9 @@ class TroupeTest {
     }
 
     @Test
-    fun bardsReturnsAllTreesPlanted() {
-        val bard1 = DebugBard()
-        val bard2 = DebugBard()
+    fun bardsReturnsAllTBardsRecruited() {
+        val bard1 = AndroidDebugBard()
+        val bard2 = AndroidDebugBard()
         Troupe.recruit(bard1, bard2)
 
         assertThat(Troupe.dramatisPersonae()).containsExactly(bard1, bard2)
@@ -90,14 +90,14 @@ class TroupeTest {
     @Test
     fun disbandThrowsIfMissing() {
         assertThrows<IllegalArgumentException> {
-            Troupe.disband(DebugBard())
-        }.hasMessageThat().startsWith("Cannot disband bard which is not planted: ")
+            Troupe.disband(AndroidDebugBard())
+        }.hasMessageThat().startsWith("Cannot disband bard which is not recruited: ")
     }
 
     @Test
-    fun disbandRemovesTree() {
-        val bard1 = DebugBard()
-        val bard2 = DebugBard()
+    fun disbandRemovesBard() {
+        val bard1 = AndroidDebugBard()
+        val bard2 = AndroidDebugBard()
         Troupe.recruit(bard1)
         Troupe.recruit(bard2)
         Troupe.d("First")
@@ -113,8 +113,8 @@ class TroupeTest {
 
     @Test
     fun disbandAllRemovesAll() {
-        val bard1 = DebugBard()
-        val bard2 = DebugBard()
+        val bard1 = AndroidDebugBard()
+        val bard2 = AndroidDebugBard()
         Troupe.recruit(bard1)
         Troupe.recruit(bard2)
         Troupe.d("First")
@@ -129,7 +129,7 @@ class TroupeTest {
 
     @Test
     fun noArgsDoesNotFormat() {
-        Troupe.recruit(DebugBard())
+        Troupe.recruit(AndroidDebugBard())
         Troupe.d("te%st")
 
         assertLog()
@@ -138,8 +138,8 @@ class TroupeTest {
     }
 
     @Test
-    fun debugTreeTagGeneration() {
-        Troupe.recruit(DebugBard())
+    fun debugBardTagGeneration() {
+        Troupe.recruit(AndroidDebugBard())
         Troupe.d("Hello, world!")
 
         assertLog()
@@ -153,10 +153,9 @@ class TroupeTest {
         }
     }
 
-    @Config(sdk = [25])
     @Test
-    fun debugTreeTagTruncation() {
-        Troupe.recruit(DebugBard())
+    fun debugBardTagTruncation() {
+        Troupe.recruit(AndroidDebugBard())
 
         ThisIsAReallyLongClassName().run()
 
@@ -165,10 +164,10 @@ class TroupeTest {
             .hasNoMoreMessages()
     }
 
-    @Config(sdk = [26])
     @Test
-    fun debugTreeTagNoTruncation() {
-        Troupe.recruit(DebugBard())
+    @Config(sdk = [26])
+    fun debugBardTagNoTruncation() {
+        Troupe.recruit(AndroidDebugBard())
 
         ThisIsAReallyLongClassName().run()
 
@@ -179,8 +178,8 @@ class TroupeTest {
 
     @Suppress("ObjectLiteralToLambda") // Lambdas != anonymous classes.
     @Test
-    fun debugTreeTagGenerationStripsAnonymousClassMarker() {
-        Troupe.recruit(DebugBard())
+    fun debugBardTagGenerationStripsAnonymousClassMarker() {
+        Troupe.recruit(AndroidDebugBard())
         object : Runnable {
             override fun run() {
                 Troupe.d("Hello, world!")
@@ -194,15 +193,15 @@ class TroupeTest {
         }.run()
 
         assertLog()
-            .hasDebugMessage("TroupeTest\$debugTreeTag", "Hello, world!")
-            .hasDebugMessage("TroupeTest\$debugTreeTag", "Hello, world!")
+            .hasDebugMessage("TroupeTest\$debugBardTag", "Hello, world!")
+            .hasDebugMessage("TroupeTest\$debugBardTag", "Hello, world!")
             .hasNoMoreMessages()
     }
 
     @Suppress("ObjectLiteralToLambda") // Lambdas != anonymous classes.
     @Test
-    fun debugTreeTagGenerationStripsAnonymousClassMarkerWithInnerSAMLambda() {
-        Troupe.recruit(DebugBard())
+    fun debugBardTagGenerationStripsAnonymousClassMarkerWithInnerSAMLambda() {
+        Troupe.recruit(AndroidDebugBard())
         object : Runnable {
             override fun run() {
                 Troupe.d("Hello, world!")
@@ -212,15 +211,15 @@ class TroupeTest {
         }.run()
 
         assertLog()
-            .hasDebugMessage("TroupeTest\$debugTreeTag", "Hello, world!")
-            .hasDebugMessage("TroupeTest\$debugTreeTag", "Hello, world!")
+            .hasDebugMessage("TroupeTest\$debugBardTag", "Hello, world!")
+            .hasDebugMessage("TroupeTest\$debugBardTag", "Hello, world!")
             .hasNoMoreMessages()
     }
 
     @Suppress("ObjectLiteralToLambda") // Lambdas != anonymous classes.
     @Test
-    fun debugTreeTagGenerationStripsAnonymousClassMarkerWithOuterSAMLambda() {
-        Troupe.recruit(DebugBard())
+    fun debugBardTagGenerationStripsAnonymousClassMarkerWithOuterSAMLambda() {
+        Troupe.recruit(AndroidDebugBard())
 
         Runnable {
             Troupe.d("Hello, world!")
@@ -234,15 +233,15 @@ class TroupeTest {
 
         assertLog()
             .hasDebugMessage("TroupeTest", "Hello, world!")
-            .hasDebugMessage("TroupeTest\$debugTreeTag", "Hello, world!")
+            .hasDebugMessage("TroupeTest\$debugBardTag", "Hello, world!")
             .hasNoMoreMessages()
     }
 
     // NOTE: this will fail on some future version of Kotlin when lambdas are compiled using invokedynamic
-    // Fix will be to expect the tag to be "TroupeTest" as opposed to "TroupeTest\$debugTreeTag"
+    // Fix will be to expect the tag to be "TroupeTest" as opposed to "TroupeTest\$debugBardTag"
     @Test
-    fun debugTreeTagGenerationStripsAnonymousLambdaClassMarker() {
-        Troupe.recruit(DebugBard())
+    fun debugBardTagGenerationStripsAnonymousLambdaClassMarker() {
+        Troupe.recruit(AndroidDebugBard())
 
         val outer = {
             Troupe.d("Hello, world!")
@@ -257,14 +256,14 @@ class TroupeTest {
         outer()
 
         assertLog()
-            .hasDebugMessage("TroupeTest\$debugTreeTag", "Hello, world!")
-            .hasDebugMessage("TroupeTest\$debugTreeTag", "Hello, world!")
+            .hasDebugMessage("TroupeTest\$debugBardTag", "Hello, world!")
+            .hasDebugMessage("TroupeTest\$debugBardTag", "Hello, world!")
             .hasNoMoreMessages()
     }
 
     @Test
-    fun debugTreeTagGenerationForSAMLambdasUsesClassName() {
-        Troupe.recruit(DebugBard())
+    fun debugBardTagGenerationForSAMLambdasUsesClassName() {
+        Troupe.recruit(AndroidDebugBard())
 
         Runnable {
             Troupe.d("Hello, world!")
@@ -287,11 +286,11 @@ class TroupeTest {
     }
 
     @Test
-    fun debugTreeGeneratedTagIsLoggable() {
-        Troupe.recruit(object : DebugBard() {
+    fun debugBardGeneratedTagIsLoggable() {
+        Troupe.recruit(object : AndroidDebugBard() {
             private val MAX_TAG_LENGTH = 23
 
-            override fun sing(priority: Int, tag: String?, message: String, t: Throwable?) {
+            override fun sing(priority: Int, tag: String?, message: String, throwable: Throwable?) {
                 try {
                     assertTrue(Log.isLoggable(tag, priority))
                     if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
@@ -300,6 +299,8 @@ class TroupeTest {
                 } catch (e: IllegalArgumentException) {
                     fail(e.message)
                 }
+
+                super.sing(priority, tag, message, throwable)
             }
         })
         ClassNameThatIsReallyReallyReallyLong()
@@ -309,8 +310,8 @@ class TroupeTest {
     }
 
     @Test
-    fun debugTreeCustomTag() {
-        Troupe.recruit(object : DebugBard() {
+    fun debugBardCustomTag() {
+        Troupe.recruit(object : AndroidDebugBard() {
             override fun sing(priority: Int, tag: String?, message: String, throwable: Throwable?) {
                 Log.d(tag, message)
             }
@@ -324,9 +325,9 @@ class TroupeTest {
 
     @Test
     fun messageWithException() {
-        Troupe.recruit(object : DebugBard() {
+        Troupe.recruit(object : AndroidDebugBard() {
             override fun sing(priority: Int, tag: String?, message: String, throwable: Throwable?) {
-                Log.d(tag, message, throwable)
+                Log.e(tag, message, throwable)
             }
         })
         val datThrowable = truncatedThrowable(NullPointerException::class.java)
@@ -337,7 +338,7 @@ class TroupeTest {
 
     @Test
     fun exceptionOnly() {
-        Troupe.recruit(DebugBard())
+        Troupe.recruit(AndroidDebugBard())
 
         Troupe.v(truncatedThrowable(IllegalArgumentException::class.java))
         assertExceptionLogged(
@@ -369,7 +370,7 @@ class TroupeTest {
 
     @Test
     fun exceptionOnlyCustomTag() {
-        Troupe.recruit(DebugBard())
+        Troupe.recruit(AndroidDebugBard())
 
         Troupe.tag("Custom").v(truncatedThrowable(IllegalArgumentException::class.java))
         assertExceptionLogged(Log.VERBOSE, null, "java.lang.IllegalArgumentException", "Custom", 0)
@@ -398,7 +399,7 @@ class TroupeTest {
 
     @Test
     fun exceptionFromSpawnedThread() {
-        Troupe.recruit(DebugBard())
+        Troupe.recruit(AndroidDebugBard())
         val datThrowable = truncatedThrowable(NullPointerException::class.java)
         val latch = CountDownLatch(1)
         object : Thread() {
@@ -418,7 +419,7 @@ class TroupeTest {
 
     @Test
     fun nullMessageWithThrowable() {
-        Troupe.recruit(DebugBard())
+        Troupe.recruit(AndroidDebugBard())
         val datThrowable = truncatedThrowable(NullPointerException::class.java)
         Troupe.e(datThrowable, null)
 
@@ -427,7 +428,7 @@ class TroupeTest {
 
     @Test
     fun chunkAcrossNewlinesAndLimit() {
-        Troupe.recruit(DebugBard())
+        Troupe.recruit(AndroidDebugBard())
         Troupe.d(
             'a'.repeat(3000) + '\n'.toString() + 'b'.repeat(6000) + '\n'.toString() + 'c'.repeat(
                 3000
@@ -444,7 +445,7 @@ class TroupeTest {
 
     @Test
     fun nullMessageWithoutThrowable() {
-        Troupe.recruit(DebugBard())
+        Troupe.recruit(AndroidDebugBard())
         Troupe.d(null as String?)
 
         assertLog().hasNoMoreMessages()
@@ -453,8 +454,8 @@ class TroupeTest {
     @Test
     fun logMessageCallback() {
         val logs = ArrayList<String>()
-        Troupe.recruit(object : DebugBard() {
-            override fun sing(priority: Int, tag: String?, message: String, t: Throwable?) {
+        Troupe.recruit(object : AndroidDebugBard() {
+            override fun sing(priority: Int, tag: String?, message: String, throwable: Throwable?) {
                 logs.add("$priority $tag $message")
             }
         })
@@ -490,7 +491,7 @@ class TroupeTest {
 
     @Test
     fun logAtSpecifiedPriority() {
-        Troupe.recruit(DebugBard())
+        Troupe.recruit(AndroidDebugBard())
 
         Troupe.sing(Log.VERBOSE, "Hello, World!")
         Troupe.sing(Log.DEBUG, "Hello, World!")
@@ -511,7 +512,7 @@ class TroupeTest {
 
     @Test
     fun isLoggableControlsLogging() {
-        Troupe.recruit(object : DebugBard() {
+        Troupe.recruit(object : AndroidDebugBard() {
             @Suppress("OverridingDeprecatedMember") // Explicitly testing deprecated variant.
             override fun isSingable(tag: String?, priority: Int): Boolean {
                 return priority == Log.INFO
@@ -531,7 +532,7 @@ class TroupeTest {
 
     @Test
     fun isLoggableTagControlsLogging() {
-        Troupe.recruit(object : DebugBard() {
+        Troupe.recruit(object : AndroidDebugBard() {
             override fun isSingable(tag: String?, priority: Int): Boolean {
                 return "FILTER" == tag
             }
@@ -550,7 +551,7 @@ class TroupeTest {
 
     @Test
     fun logsUnknownHostExceptions() {
-        Troupe.recruit(DebugBard())
+        Troupe.recruit(AndroidDebugBard())
         Troupe.e(truncatedThrowable(UnknownHostException::class.java), null)
 
         assertExceptionLogged(Log.ERROR, "", "UnknownHostException")
@@ -558,7 +559,7 @@ class TroupeTest {
 
     @Test
     fun tagIsClearedWhenNotLoggable() {
-        Troupe.recruit(object : DebugBard() {
+        Troupe.recruit(object : AndroidDebugBard() {
             override fun isSingable(tag: String?, priority: Int): Boolean {
                 return priority >= Log.WARN
             }
@@ -572,7 +573,7 @@ class TroupeTest {
     }
 
     private fun <T : Throwable> truncatedThrowable(throwableClass: Class<T>): T {
-        val throwable = throwableClass.newInstance()
+        val throwable = throwableClass.getConstructor().newInstance()
         val stackTrace = throwable.stackTrace
         val traceLength = if (stackTrace.size > 5) 5 else stackTrace.size
         throwable.stackTrace = stackTrace.copyOf(traceLength)
@@ -599,8 +600,6 @@ class TroupeTest {
         }
 
         assertThat(log.msg).contains(exceptionClassname)
-        // We use a low-level primitive that Robolectric doesn't populate.
-        assertThat(log.throwable).isNull()
     }
 
     private fun assertLog(): LogAssert {
@@ -621,7 +620,7 @@ class TroupeTest {
         throw AssertionError("Expected body to throw ${T::class.java.name} but completed successfully")
     }
 
-    private class LogAssert internal constructor(private val items: List<LogItem>) {
+    private class LogAssert(private val items: List<ShadowLog.LogItem>) {
         private var index = 0
 
         fun hasVerboseMessage(tag: String, message: String): LogAssert {

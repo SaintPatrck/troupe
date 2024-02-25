@@ -8,11 +8,12 @@ pluginManagement {
 }
 
 dependencyResolutionManagement {
+    @Suppress("UnstableApiUsage")
     repositories {
         google()
         mavenCentral()
     }
 }
 
-rootProject.name = "Troupe"
+rootProject.name = "troupe"
 include(":troupe")
