@@ -1,5 +1,8 @@
 package com.saintpatrck.log.troupe
 
+package com.saintpatrck.logging.troupe
+
+import kotlin.concurrent.Volatile
 import kotlin.jvm.JvmName
 import kotlin.jvm.JvmStatic
 import kotlin.jvm.JvmSynthetic
@@ -188,7 +191,7 @@ class Troupe private constructor() {
             message: String? = null
         ) {
             // Consume tag even when message is not loggable so that next message is correctly tagged.
-            val tag = explicitTag
+            val tag = tag
             if (!isSingable(tag, priority)) {
                 return
             }
@@ -372,7 +375,6 @@ class Troupe private constructor() {
                 require(subscriber !== this) { "Cannot recruit Troupe into itself." }
             }
 
-            this.bards.addAll(bards)
             this.bards.addAll(bards)
             bardArray = this.bards.toTypedArray()
         }
