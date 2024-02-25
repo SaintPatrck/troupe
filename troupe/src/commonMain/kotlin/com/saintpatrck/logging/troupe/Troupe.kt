@@ -188,7 +188,7 @@ class Troupe private constructor() {
             message: String? = null
         ) {
             // Consume tag even when message is not loggable so that next message is correctly tagged.
-            val tag = explicitTag
+            val tag = tag
             if (!isSingable(tag, priority)) {
                 return
             }
