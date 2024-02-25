@@ -374,9 +374,8 @@ class Troupe private constructor() {
                 require(subscriber !== this) { "Cannot recruit Troupe into itself." }
             }
 
-            Companion.bards.addAll(bards)
-            Companion.bards.addAll(bards)
-            bardArray = Companion.bards.toTypedArray()
+            this.bards.addAll(bards)
+            bardArray = this.bards.toTypedArray()
         }
 
         /** Disband a recruited [bard]. */
