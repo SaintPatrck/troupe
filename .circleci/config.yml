@@ -9,25 +9,35 @@ version: 2.1
 # See: https://circleci.com/docs/orb-intro/
 orbs:
   # See the Android orb documentation here: https://circleci.com/developer/orbs/orb/circleci/android
-  android: circleci/android@2.4.0
+  android: circleci/android@2.5.0
 
+  # See the CodeCov orb documentation here: https://circleci.com/developer/orbs/orb/codecov/codecov
   codecov: codecov/codecov@4.0.1
+
+aliases:
+  - &android_machine_executor
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: default
+
+  - &attach_workspace
+    attach_workspace:
+      at: .
+
+  - &restore-gradle-cache
+    android/restore-gradle-cache:
+      find-args: . -name "build.gradle*" -o -name "settings.gradle*" -o -name "libs.versions.toml"
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/jobs-steps/#jobs-overview & https://circleci.com/docs/configuration-reference/#jobs
 jobs:
   # Below is the definition of your job to build and test your app, you can rename and customize it as you want.
   build-and-test:
+    # These next lines define the Android machine image executor.
+    # See: https://circleci.com/docs/executor-intro/ & https://circleci.com/developer/orbs/orb/circleci/android#executors-android-machine
+    <<: *android_machine_executor
 
-    environment: 
-      ANDROID_HOME: "/usr/local/share/android-sdk"
-
-    # Specify the execution environment.
-    # See: https://circleci.com/docs/executor-intro/ & https://circleci.com/docs/configuration-reference/#executor-job
-    macos:
-      # Specify the Xcode version you desire here
-      # See: https://circleci.com/docs/using-macos/
-      xcode: 15.2.0
 
     # Add steps to the job
     # See: https://circleci.com/docs/jobs-steps/#steps-overview & https://circleci.com/docs/configuration-reference/#steps
@@ -35,33 +45,20 @@ jobs:
       # Checkout the code as the first step.
       - checkout
 
-      # Install JDK
-      - run:
-          name: Install JDK 8
-          command: |
-            brew install --cask homebrew/cask-versions/temurin8
- 
-      # Install android-sdk
-      - run:
-          name: Install android-sdk
-          command: |
-            brew install --cask android-sdk
-            
-      # Accept android-sdk licenses
-      - run:
-          name: Accept android licenses
-          command: |
-            sdkmanager --licenses
+      - *attach_workspace
 
+      - android/restore-build-cache
+
+      - *restore-gradle-cache
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
 
       # The next step will run the unit tests
-      - run:
-          name: Run unit tests
-          command: |
-            ./gradlew lint testDebug --continue --no-daemon
-
-      # Upload code coverage report to CodeCov.io
-      - codecov/upload
+      - android/run-tests:
+          test-command: ./gradlew lint testDebug --continue
 
       # And finally run the release build
       - run:
@@ -69,10 +66,20 @@ jobs:
           command: |
             ./gradlew assembleRelease
 
+      - store_artifacts:
+          path: ./build/troupe/reports/lint-results-debug.html
+
+      - store_test_results:
+          path: ./build/troupe/build/test-results/testDebugUnitTest
+
+      - android/save-gradle-cache
+
+      - android/save-build-cache
+
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  build-check: # This is the name of the workflow, feel free to change it to better match your workflow.
+  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - build-and-test
