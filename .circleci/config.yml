@@ -11,6 +11,8 @@ orbs:
   # See the Android orb documentation here: https://circleci.com/developer/orbs/orb/circleci/android
   android: circleci/android@2.4.0
 
+  codecov: codecov/codecov@4.0.1
+
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/jobs-steps/#jobs-overview & https://circleci.com/docs/configuration-reference/#jobs
 jobs:
@@ -33,6 +35,8 @@ jobs:
       - android/run-tests:
           test-command: ./gradlew lint testDebug --continue
 
+
+
       # And finally run the release build
       - run:
           name: Assemble release build
@@ -46,3 +50,4 @@ workflows:
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - build-and-test
+      - codecov/upload
