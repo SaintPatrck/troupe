@@ -13,10 +13,6 @@ orbs:
 
   codecov: codecov/codecov@4.0.1
 
-dependencies:
-  override:
-    - brew install --cask android-sdk
-
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/jobs-steps/#jobs-overview & https://circleci.com/docs/configuration-reference/#jobs
 jobs:
@@ -39,6 +35,12 @@ jobs:
       # Checkout the code as the first step.
       - checkout
 
+      # Install JDK
+      - run:
+          name: Install JDK 8
+          command: |
+            brew install --cask homebrew/cask-versions/temurin8
+ 
       # Install android-sdk
       - run:
           name: Install android-sdk
