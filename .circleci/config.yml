@@ -43,7 +43,10 @@ jobs:
       - run:
           name: Install android-sdk
           command: |
-            brew instal --cask android-sdk
+            brew install --cask android-sdk
+            
+      # Accept android-sdk licenses
+      - android/accept-licenses
 
       # The next step will run the unit tests
       - run:
