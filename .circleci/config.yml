@@ -51,11 +51,6 @@ jobs:
 
       - *restore-gradle-cache
 
-      - persist_to_workspace:
-          root: .
-          paths:
-            - .
-
       # The next step will run the unit tests
       - android/run-tests:
           test-command: ./gradlew lint testDebug --continue
@@ -67,14 +62,19 @@ jobs:
             ./gradlew assembleRelease
 
       - store_artifacts:
-          path: ./build/reports/lint-results-debug.html
+          path: ./troupe/build/reports/lint-results-debug.html
 
       - store_test_results:
-          path: ./build/test-results/testDebugUnitTest
+          path: ./troupe/build/test-results/testDebugUnitTest
 
       - android/save-gradle-cache
 
       - android/save-build-cache
+
+      - persist_to_workspace:
+          root: .
+          paths:
+            - .
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
