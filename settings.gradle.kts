@@ -15,5 +15,5 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "troupe"
+rootProject.name = "troupe-logging"
 include(":troupe")
