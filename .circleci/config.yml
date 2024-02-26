@@ -67,10 +67,10 @@ jobs:
             ./gradlew assembleRelease
 
       - store_artifacts:
-          path: ./build/troupe/reports/lint-results-debug.html
+          path: ./build/reports/lint-results-debug.html
 
       - store_test_results:
-          path: ./build/troupe/build/test-results/testDebugUnitTest
+          path: ./build/test-results/testDebugUnitTest
 
       - android/save-gradle-cache
 
@@ -79,7 +79,7 @@ jobs:
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
 workflows:
-  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
+  build-check: # This is the name of the workflow, feel free to change it to better match your workflow.
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - build-and-test
