@@ -35,7 +35,8 @@ jobs:
       - android/run-tests:
           test-command: ./gradlew lint testDebug --continue
 
-
+      # Upload code coverage report to CodeCov.io
+      - codecov/upload
 
       # And finally run the release build
       - run:
@@ -50,4 +51,3 @@ workflows:
     # Inside the workflow, you define the jobs you want to run.
     jobs:
       - build-and-test
-      - codecov/upload
