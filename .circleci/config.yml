@@ -39,6 +39,12 @@ jobs:
       # Checkout the code as the first step.
       - checkout
 
+      # Install android-sdk
+      - run:
+          name: Install android-sdk
+          command: |
+            brew instal --cask android-sdk
+
       # The next step will run the unit tests
       - run:
           name: Run unit tests
