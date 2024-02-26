@@ -48,7 +48,11 @@ jobs:
             brew install --cask android-sdk
             
       # Accept android-sdk licenses
-      - android/accept-licenses
+      - run:
+          name: Accept android licenses
+          command: |
+            sdkmanager --licenses
+
 
       # The next step will run the unit tests
       - run:
