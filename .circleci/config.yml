@@ -40,8 +40,10 @@ jobs:
       - checkout
 
       # The next step will run the unit tests
-      - android/run-tests:
-          test-command: ./gradlew lint testDebug --continue
+      - run:
+          name: Run unit tests
+          command: |
+            ./gradlew lint testDebug --continue --no-daemon
 
       # Upload code coverage report to CodeCov.io
       - codecov/upload
