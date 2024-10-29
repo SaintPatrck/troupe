@@ -1,11 +1,11 @@
 Pod::Spec.new do |spec|
     spec.name                     = 'troupe'
-    spec.version                  = '1.0.0'
+    spec.version                  = '0.0.1'
     spec.homepage                 = 'https://github.com/saintpatrck/troupe'
     spec.source                   = { :http=> ''}
     spec.authors                  = ''
     spec.license                  = ''
-    spec.summary                  = 'Timber style logging for KMP'
+    spec.summary                  = 'Timber style logging for KMP projects'
     spec.vendored_frameworks      = 'build/cocoapods/framework/troupe.framework'
     spec.libraries                = 'c++'
     spec.ios.deployment_target = '16.0'
