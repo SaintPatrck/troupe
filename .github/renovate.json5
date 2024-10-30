@@ -1,0 +1,50 @@
+{
+  $schema: 'https://docs.renovatebot.com/renovate-schema.json',
+  extends: [
+    ':combinePatchMinorReleases',
+    ':separateMajorReleases',
+    'config:recommended',
+    'config:best-practices',
+  ],
+  baseBranches: [
+    'main',
+  ],
+  packageRules: [
+    {
+      description: 'Group Gradle minor and patch updates',
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+      ],
+      matchManagers: [
+        'gradle',
+      ],
+      groupName: 'gradle minor',
+    },
+    {
+      description: 'Group GitHub Action minor and patch updates',
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+      ],
+      matchManagers: [
+        'github-actions',
+      ],
+      groupName: 'github actions',
+    },
+    {
+      description: 'Group CircleCI minor and patch updates',
+      matchUpdateTypes: [
+        'minor',
+        'patch',
+      ],
+      matchManagers: [
+        'circleci',
+      ]
+    }
+  ],
+  rebaseWhen: "auto",
+  rollbackPrs: true,
+  dependencyDashboard: true,
+  dependencyDashboardAutoclose: true,
+}
