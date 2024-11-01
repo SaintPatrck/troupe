@@ -12,7 +12,7 @@ orbs:
   android: circleci/android@2.5.0
 
   # See the CodeCov orb documentation here: https://circleci.com/developer/orbs/orb/codecov/codecov
-  codecov: codecov/codecov@4.0.1
+  codecov: codecov/codecov@5.0.0
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/jobs-steps/#jobs-overview & https://circleci.com/docs/configuration-reference/#jobs
