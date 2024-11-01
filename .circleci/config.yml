@@ -14,17 +14,6 @@ orbs:
   # See the CodeCov orb documentation here: https://circleci.com/developer/orbs/orb/codecov/codecov
   codecov: codecov/codecov@4.0.1
 
-aliases:
-  - &android_machine_executor
-    executor:
-      name: android/android-machine
-      resource-class: large
-      tag: default
-
-  - &restore-gradle-cache
-    android/restore-gradle-cache:
-      find-args: . -name "build.gradle*" -o -name "settings.gradle*" -o -name "libs.versions.toml"
-
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/jobs-steps/#jobs-overview & https://circleci.com/docs/configuration-reference/#jobs
 jobs:
@@ -32,14 +21,18 @@ jobs:
   build-and-test:
     # These next lines define the Android machine image executor.
     # See: https://circleci.com/docs/executor-intro/ & https://circleci.com/developer/orbs/orb/circleci/android#executors-android-machine
-    <<: *android_machine_executor
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: default
 
     steps:
       - checkout
 
       - android/restore-build-cache
 
-      - *restore-gradle-cache
+      - android/restore-gradle-cache:
+          find-args: . -name "build.gradle*" -o -name "settings.gradle*" -o -name "libs.versions.toml"
 
       - android/run-tests:
           test-command: ./gradlew lint testDebug --continue
