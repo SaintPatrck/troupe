@@ -4,43 +4,44 @@
     ':combinePatchMinorReleases',
     ':separateMajorReleases',
     'config:recommended',
-    'config:best-practices',
+    'config:best-practices'
   ],
   baseBranches: [
     'main',
-    'renovate/config',
+    'renovate/config'
   ],
+  useBaseBranchConfig: "merge",
   packageRules: [
     {
       description: 'Group Gradle minor and patch updates',
       matchUpdateTypes: [
         'minor',
-        'patch',
+        'patch'
       ],
       matchManagers: [
-        'gradle',
+        'gradle'
       ],
-      groupName: 'gradle minor',
+      groupName: 'gradle minor'
     },
     {
       description: 'Group GitHub Action minor and patch updates',
       matchUpdateTypes: [
         'minor',
-        'patch',
+        'patch'
       ],
       matchManagers: [
-        'github-actions',
+        'github-actions'
       ],
-      groupName: 'github actions',
+      groupName: 'github actions'
     },
     {
       description: 'Group CircleCI minor and patch updates',
       matchUpdateTypes: [
         'minor',
-        'patch',
+        'patch'
       ],
       matchManagers: [
-        'circleci',
+        'circleci'
       ],
       groupName: 'circleci minor'
     }
@@ -48,5 +49,5 @@
   rebaseWhen: "auto",
   rollbackPrs: true,
   dependencyDashboard: true,
-  dependencyDashboardAutoclose: true,
+  dependencyDashboardAutoclose: true
 }
