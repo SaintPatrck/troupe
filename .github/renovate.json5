@@ -8,7 +8,6 @@
   ],
   baseBranches: [
     'main',
-    'renovate/config'
   ],
   useBaseBranchConfig: "merge",
   packageRules: [
