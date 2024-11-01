@@ -9,7 +9,7 @@ version: 2.1
 # See: https://circleci.com/docs/orb-intro/
 orbs:
   # See the Android orb documentation here: https://circleci.com/developer/orbs/orb/circleci/android
-  android: circleci/android@2.5.0
+  android: circleci/android@3.0.1
 
   # See the CodeCov orb documentation here: https://circleci.com/developer/orbs/orb/codecov/codecov
   codecov: codecov/codecov@5.0.0
@@ -22,20 +22,19 @@ jobs:
     # These next lines define the Android machine image executor.
     # See: https://circleci.com/docs/executor-intro/ & https://circleci.com/developer/orbs/orb/circleci/android#executors-android-machine
     executor:
-      name: android/android-machine
-      resource-class: large
+      name: android/android_machine
       tag: default
 
     steps:
       - checkout
 
-      - android/restore-build-cache
+      - android/restore_build_cache
 
-      - android/restore-gradle-cache:
-          find-args: . -name "build.gradle*" -o -name "settings.gradle*" -o -name "libs.versions.toml"
+      - android/restore_gradle_cache:
+          find_args: . -name "build.gradle*" -o -name "settings.gradle*" -o -name "libs.versions.toml"
 
-      - android/run-tests:
-          test-command: ./gradlew lint testDebug --continue
+      - android/run_tests:
+          test_command: ./gradlew lint testDebug --continue
 
       - run:
           name: Assemble release build
@@ -50,9 +49,9 @@ jobs:
       - store_test_results:
           path: ./troupe/build/test-results/testDebugUnitTest
 
-      - android/save-gradle-cache
+      - android/save_gradle_cache
 
-      - android/save-build-cache
+      - android/save_build_cache
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/workflows/ & https://circleci.com/docs/configuration-reference/#workflows
