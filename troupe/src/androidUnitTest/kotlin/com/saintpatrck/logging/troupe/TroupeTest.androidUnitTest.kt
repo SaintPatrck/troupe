@@ -237,8 +237,6 @@ class TroupeTest {
             .hasNoMoreMessages()
     }
 
-    // NOTE: this will fail on some future version of Kotlin when lambdas are compiled using invokedynamic
-    // Fix will be to expect the tag to be "TroupeTest" as opposed to "TroupeTest\$debugBardTag"
     @Test
     fun debugBardTagGenerationStripsAnonymousLambdaClassMarker() {
         Troupe.recruit(AndroidDebugBard())
@@ -256,8 +254,8 @@ class TroupeTest {
         outer()
 
         assertLog()
-            .hasDebugMessage("TroupeTest\$debugBardTag", "Hello, world!")
-            .hasDebugMessage("TroupeTest\$debugBardTag", "Hello, world!")
+            .hasDebugMessage("TroupeTest", "Hello, world!")
+            .hasDebugMessage("TroupeTest", "Hello, world!")
             .hasNoMoreMessages()
     }
 
