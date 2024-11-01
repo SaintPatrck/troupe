@@ -36,12 +36,11 @@
     },
     {
       description: 'Group CircleCI minor and patch updates',
-      matchUpdateTypes: [
-        'minor',
-        'patch'
+      matchFileNames: [
+        ".circleci/config.yml"
       ],
-      matchManagers: [
-        'circleci'
+      matchDatasources: [
+        'orb'
       ],
       groupName: 'circleci minor'
     }
