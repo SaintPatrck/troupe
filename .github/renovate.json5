@@ -40,7 +40,8 @@
       ],
       matchManagers: [
         'circleci',
-      ]
+      ],
+      groupName: 'circleci minor'
     }
   ],
   rebaseWhen: "auto",
