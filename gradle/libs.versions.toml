@@ -11,7 +11,7 @@ junit = "4.13.2"
 jvm-target = "17"
 jvm-toolchain = "17"
 
-kotlin = "1.9.25"
+kotlin = "2.0.21"
 
 mockK = "1.13.13"
 
