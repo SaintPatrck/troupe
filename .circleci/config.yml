@@ -49,6 +49,8 @@ jobs:
       - store_test_results:
           path: ./troupe/build/test-results/testDebugUnitTest
 
+      - codecov/upload
+
       - android/save_gradle_cache
 
       - android/save_build_cache
