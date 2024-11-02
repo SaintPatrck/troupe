@@ -41,6 +41,15 @@ jobs:
           command: |
             ./gradlew assembleRelease
 
+      # Save build artifacts
+      - run:
+          name: Archive build artifacts
+          command: |
+            ./gradlew archiveAllPublicationsFromProjectLocalRepository
+
+      - store_artifacts:
+          path: ./troupe/build/distributions
+
       # Save lint report
       - store_artifacts:
           path: ./troupe/build/reports/lint-results-debug.html
