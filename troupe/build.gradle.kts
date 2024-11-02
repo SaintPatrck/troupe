@@ -1,10 +1,20 @@
 import org.jetbrains.kotlin.konan.properties.loadProperties
+import java.util.Properties
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.kotlinCocoapods)
     alias(libs.plugins.androidLibrary)
+    alias(libs.plugins.kover)
     id("maven-publish")
+}
+
+val localProperties: Properties? by lazy {
+    try {
+        loadProperties("local.properties")
+    } catch (e: Throwable) {
+        null
+    }
 }
 
 group = "com.saintpatrck.logging"
@@ -73,10 +83,27 @@ android {
     }
 }
 
-val localProperties = try {
-    loadProperties("local.properties")
-} catch (e: Throwable) {
-    null
+kover {
+    currentProject {
+        sources {
+            excludeJava = true
+        }
+    }
+    reports {
+        filters {
+            excludes {
+                androidGeneratedClasses()
+            }
+        }
+        total {
+            xml {
+                onCheck.set(true)
+            }
+            html {
+                onCheck.set(true)
+            }
+        }
+    }
 }
 
 configure<PublishingExtension> {

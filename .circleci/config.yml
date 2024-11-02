@@ -34,7 +34,7 @@ jobs:
           find_args: . -name "build.gradle*" -o -name "settings.gradle*" -o -name "libs.versions.toml"
 
       - android/run_tests:
-          test_command: ./gradlew lint testDebug --continue
+          test_command: ./gradlew check
 
       - run:
           name: Assemble release build
@@ -49,7 +49,8 @@ jobs:
       - store_test_results:
           path: ./troupe/build/test-results/testDebugUnitTest
 
-      - codecov/upload
+      - codecov/upload:
+          files: troupe/build/reports/kover/report.xml
 
       - android/save_gradle_cache
 
