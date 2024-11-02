@@ -29,7 +29,14 @@ jobs:
       - name: Build
         run: ./gradlew build
 
-      - name: Publish to GitHub Packages
+      - name: Publish to local maven repo
+        run: |
+          ./gradlew publishAllPublicationsToProjectLocalRepository
+
+      - name: Upload artifacts to action summary
+        run: ./gradlew archiveAllPublicationsFromProjectLocalRepository
+
+      - name: Publish artifacts to GitHub Packages
         env:
           GPR_USERNAME: ${{ secrets.GPR_USERNAME }}
           GPR_PASSWORD: ${{ secrets.GPR_PASSWORD }}
