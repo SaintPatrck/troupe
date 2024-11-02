@@ -2,11 +2,21 @@ name: Publish to GitHub Packages
 
 on:
   workflow_dispatch:
+    inputs:
+      dry-run:
+        description: 'Check to publish locally. Useful for testing.'
+        type: boolean
+        default: false
+        required: false
 
 jobs:
   publish-gpr:
     runs-on: macos-latest
     steps:
+      - name: Echo inputs
+        run: |
+          echo "Dry run: ${{ inputs.dry-run }}"
+
       - name: Checkout code
         uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
 
@@ -23,4 +33,5 @@ jobs:
         env:
           GPR_USERNAME: ${{ secrets.GPR_USERNAME }}
           GPR_PASSWORD: ${{ secrets.GPR_PASSWORD }}
+        if: ${{ inputs.dry-run != true }}
         run: ./gradlew publishAllPublicationsToGitHubPackagesRepository
