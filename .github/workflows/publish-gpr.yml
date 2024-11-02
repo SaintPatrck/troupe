@@ -2,6 +2,12 @@ name: Publish to GitHub Packages
 
 on:
   workflow_dispatch:
+      inputs:
+        dry-run:
+          description: 'Check to publish locally. Useful for testing.'
+          type: boolean
+          default: false
+          required: false
 
 jobs:
   publish-gpr:
