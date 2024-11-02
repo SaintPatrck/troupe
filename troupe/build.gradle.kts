@@ -120,10 +120,15 @@ configure<PublishingExtension> {
                         ?: System.getenv("GPR_PASSWORD")?.takeUnless { it.isEmpty() }
             }
         }
-    }
-    publications {
-        register<MavenPublication>(name = "Troupe") {
-            from(components["kotlin"])
+        maven {
+            name = "ProjectLocal"
+            url = uri(layout.buildDirectory.dir(".m2/repository"))
         }
     }
+}
+
+tasks.register<Zip>("archiveAllPublicationsFromProjectLocalRepository") {
+    group = "publishing"
+    dependsOn(tasks.getByName("publishAllPublicationsToProjectLocalRepository"))
+    from("${layout.buildDirectory.get()}/.m2/repository/")
 }
