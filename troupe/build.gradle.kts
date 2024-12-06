@@ -22,7 +22,7 @@ val localProperties: Properties? by lazy {
 }
 
 group = "com.saintpatrck.logging"
-version = "0.0.1"
+version = "0.0.2"
 
 kotlin {
     androidTarget {
