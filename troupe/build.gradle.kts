@@ -1,3 +1,6 @@
+@file:OptIn(ExperimentalWasmDsl::class)
+
+import org.jetbrains.kotlin.gradle.ExperimentalWasmDsl
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.konan.properties.loadProperties
 import java.util.Properties
@@ -41,6 +44,41 @@ kotlin {
     iosX64()
     iosArm64()
     iosSimulatorArm64()
+    jvm()
+    wasmJs {
+        useCommonJs()
+        nodejs {
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
+        }
+        browser {
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
+        }
+    }
+    js {
+        useCommonJs()
+        nodejs {
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
+        }
+        browser {
+            testTask {
+                useKarma {
+                    useChromeHeadless()
+                }
+            }
+        }
+    }
 
     cocoapods {
         summary = "Timber style logging for KMP projects"
