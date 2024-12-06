@@ -1,3 +1,4 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.konan.properties.loadProperties
 import java.util.Properties
 
@@ -24,10 +25,8 @@ kotlin {
     androidTarget {
         publishLibraryVariants("release", "debug")
         publishLibraryVariantsGroupedByFlavor = true
-        compilations.all {
-            kotlinOptions {
-                jvmTarget = libs.versions.jvm.target.get()
-            }
+        compilerOptions {
+            jvmTarget = JvmTarget.fromTarget(libs.versions.jvm.target.get())
         }
     }
 
